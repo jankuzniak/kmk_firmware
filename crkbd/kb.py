@@ -25,6 +25,9 @@ class KMKKeyboard(_KMKKeyboard):
     rgb_pixel_pin = pins[0]
     i2c = board.I2C
 
+    SCL = board.D3
+    SDA = board.D2
+
     # flake8: noqa
     # fmt: off
     coord_mapping = [
