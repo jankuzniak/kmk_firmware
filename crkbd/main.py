@@ -14,8 +14,12 @@ from kmk.extensions.peg_oled_display import (
     OledData,
 )
 from kmk.modules.combos import Combos, Chord, Sequence
+from kmk.modules.oneshot import OneShot
 
 keyboard = KMKKeyboard()
+
+oneshot = OneShot()
+keyboard.modules.append(oneshot)
 
 # Adding extensions
 rgb = RGB(
@@ -32,14 +36,15 @@ keyboard.modules.append(rgb)
 # TODO Comment one of these on each side
 # split_side = SplitSide.RIGHT
 split = Split(
-    split_side=SplitSide.LEFT,
+    #split_side=None,
     split_flip=True,  # If both halves are the same, but flipped, set this True
     split_type=SplitType.UART,  # Defaults to UART
-    split_target_left=True,
-    uart_interval=20,  # Sets the uarts delay. Lower numbers draw more power
-    data_pin=board.RX,  # The primary data pin to talk to the secondary device with
+    split_target_left=True, # Assumes that left will be the one on USB. Set to False if it will be the right
+    #uart_interval=20,  # Sets the uarts delay. Lower numbers draw more power
+    data_pin=board.GP1,  # The primary data pin to talk to the secondary device with
     data_pin2=None,  # Second uart pin to allow 2 way communication
-    use_pio=False,  # allows for UART to be used with PIO
+    uart_flip=True, # Reverses the RX and TX pins if both are provided
+    #use_pio=True,  # allows for UART to be used with PIO
 )
 keyboard.extensions.append(split)
 
@@ -67,12 +72,32 @@ combos.combos = [
 ]
 keyboard.modules.append(combos)
 
+combo_layers = {
+  (1, 2): 3,
+   }
+keyboard.modules.append(Layers(combo_layers))
+
 # Cleaner key names
 _______ = KC.TRNS
 XXXXXXX = KC.NO
 
 L_NAVI    = KC.MO(1)
 L_SYMBOLS = KC.MO(2)
+
+OS_GUI  = KC.OS(KC.LGUI)
+OS_LALT = KC.OS(KC.LALT)
+OS_RALT = KC.OS(KC.RALT)
+OS_SFT  = KC.OS(KC.LSHIFT)
+OS_CTL  = KC.OS(KC.LCTL)
+
+CTL_T = KC.LCTL(KC.T)
+CTL_A = KC.LCTL(KC.A)
+CTL_Z = KC.LCTL(KC.Z)
+CTL_X = KC.LCTL(KC.X)
+CTL_C = KC.LCTL(KC.C)
+CTL_C = KC.LCTL(KC.V)
+TO_PASTE = KC.LGUI(KC.LALT(KC.LSFT(KC.C)))
+DITTO    = KC.LGUI(KC.LALT(KC.LSFT(KC.V)))
 
 # RGB_TOG = KC.RGB_TOG
 # RGB_HUI = KC.RGB_HUI
@@ -81,11 +106,6 @@ L_SYMBOLS = KC.MO(2)
 # RGB_SAD = KC.RGB_SAD
 # RGB_VAI = KC.RGB_VAI
 # RGB_VAD = KC.RGB_VAD
-
-combo_layers = {
-  (1, 2): 3,
-   }
-keyboard.modules.append(Layers(combo_layers))
 
 # fmt: off
 keyboard.keymap = [
@@ -96,9 +116,9 @@ keyboard.keymap = [
                                             KC.LALT,   KC.SPACE,  L_NAVI,     L_SYMBOLS,   KC.BACKSPACE,  KC.RALT,
     ],
     [  # NAVIGATION
-        _______,  _______,  _______,  _______,  _______,  _______,                         _______,  _______,  _______,  _______,  _______,  _______,\
-        _______,  _______,  _______,  _______,  _______,  _______,                         _______,  _______,  _______,  _______,  _______,  _______,\
-        _______,  _______,  _______,  _______,  _______,  _______,                         _______,  _______,  _______,  _______,  _______,  _______,\
+        _______,  OS_GUI,   OS_LALT,  OS_SFT,   OS_CTL,   CTL_T,                           KC.HOME,  XXXXXXX,   KC.UP,   XXXXXXX,  KC.PGUP,           _______,\
+        _______,  CTL_A,    KC.DEL,   KC.ESC,   KC.ENT,   TO_PASTE,                        KC.END,   KC.LEFT,  KC.DOWN,  KC.RGHT,  KC.PGDN,           KC.LCTL(KC.KP_PLUS),\
+        _______,  CTL_Z,    CTL_X,    CTL_C,    CTL_C,    DITTO,                           XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC.LCTL(KC.KP_0),  KC.LCTL(KC.KP_MINUS),\
                                                 _______,  _______,  _______,     _______,  _______,  _______,
     ],
     [  # SYMBOLS
