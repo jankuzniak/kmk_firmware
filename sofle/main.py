@@ -6,8 +6,11 @@ from kmk.keys import KC
 from kmk.modules.encoder import EncoderHandler
 from kmk.modules.layers import Layers
 from kmk.modules.split import Split, SplitType
+from kmk.extensions.peg_oled_display import Oled,OledDisplayMode,OledReactionType,OledData
 
 keyboard = KMKKeyboard()
+
+keyboard.debug_enabled = True
 
 layers = Layers()
 
@@ -71,7 +74,18 @@ encoder_handler.map = (
     ((KC.VOLD, KC.VOLU),),  # Lower
 )
 
+oled_ext = Oled(
+    OledData(
+        corner_one={0:OledReactionType.STATIC,1:["layer"]},
+        corner_two={0:OledReactionType.LAYER,1:["1","2","3","4"]},
+        corner_three={0:OledReactionType.LAYER,1:["base","raise","lower","adjust"]},
+        corner_four={0:OledReactionType.LAYER,1:["qwerty","nums","shifted","leds"]}
+        ),
+        toDisplay=OledDisplayMode.TXT,flip=False)
+
 keyboard.modules.append(encoder_handler)
+print("Hello, CircuitPython!")
 
 if __name__ == '__main__':
+    print("Hello, CircuitPython!")
     keyboard.go()

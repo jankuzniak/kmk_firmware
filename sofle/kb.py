@@ -2,9 +2,8 @@ import board
 
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 # change this to match your MCU board
-from kmk.quickpin.pro_micro.sparkfun_promicro_rp2040 import pinout as pins
+from kmk.quickpin.pro_micro.elite_pi import pinout as pins
 from kmk.scanners import DiodeOrientation
-
 
 class KMKKeyboard(_KMKKeyboard):
     col_pins = (pins[17], pins[16], pins[15], pins[14], pins[13], pins[12])
@@ -21,3 +20,5 @@ class KMKKeyboard(_KMKKeyboard):
     18, 19, 20, 21, 22, 23,    53, 52, 51, 50, 49, 48,
     24, 25, 26, 27, 28, 29,    59, 58, 57, 56, 55, 54
     ]
+    SCL = board.SCL
+    SDA = board.SDA
